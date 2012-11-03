@@ -110,17 +110,6 @@
     }
 }
 
-- (YBState*)substateWithName:(NSString*)stateName {
-    __block YBState *foundSubstate = nil;
-    [_substates enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(YBState *substate, BOOL *stop) {
-        if ([[substate name] isEqualToString:stateName]) {
-            foundSubstate = substate;
-            *stop = YES;
-        }
-    }];
-    return foundSubstate;
-}
-
 - (void)setInitialSubstate:(YBState *)initialSubstate {
     if (initialSubstate == self) {
         // can't do recursion!

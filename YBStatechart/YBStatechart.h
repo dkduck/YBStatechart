@@ -36,7 +36,7 @@
  Override this method to do your custom statechart setup like e.g. setting the root state.
  This method gets called when you call -activate on the statechart.
  */
-- (void) setup;
+- (void)setup;
 
 /**
  Attemps to find the state with given name in all the states that are currently associated with the statechart.
