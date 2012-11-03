@@ -18,7 +18,9 @@
     NSMutableDictionary* registeredStates;
     NSMutableArray* gotoStateActions;
     NSMutableArray* pendingStateTransitions;
+    NSMutableArray* pendingMessages;
     BOOL stateTransitionLock;
+    BOOL sendMessageLock;
 }
 @end
 
@@ -31,7 +33,9 @@
         registeredStates = [NSMutableDictionary dictionary];
         gotoStateActions = [NSMutableArray array];
         pendingStateTransitions = [NSMutableArray array];
+        pendingMessages = [NSMutableArray array];
         stateTransitionLock = NO;
+        sendMessageLock = NO;
     }
     return self;
 }
@@ -121,6 +125,7 @@
     [self executeGotoStateActions];
     stateTransitionLock = NO;
     [self flushPendingStateTransitions];
+    [self flushPendingMessages];
 }
 
 - (void)flushPendingStateTransitions {
@@ -308,9 +313,44 @@
 }
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
-    NSAssert(_rootState != nil, @"No rootState set.");
     [anInvocation retainArguments];
-    [_rootState handleInvocationAndDispatchToActiveSubstates:anInvocation];
+    [self sendInvocation:anInvocation];
+}
+
+- (void)sendInvocation:(NSInvocation*)invocation {
+    NSAssert(_rootState != nil, @"No rootState set.");
+    if (sendMessageLock || stateTransitionLock) {
+        [pendingMessages addObject:invocation];
+        return;
+    }
+    
+    sendMessageLock = YES;
+    
+    NSMutableSet* messageHandledByStates = [NSMutableSet set];
+    [_rootState.currentSubstates enumerateObjectsUsingBlock:^(YBState* state, BOOL *stop) {
+        YBState* handlerState = state;
+        BOOL messageHandled = NO;
+        while (!messageHandled && handlerState && ![messageHandledByStates containsObject:handlerState]) {
+            messageHandled = [handlerState tryToHandleInvocation:invocation];
+            if (!messageHandled) {
+                handlerState = handlerState.superstate;
+            } else {
+                [messageHandledByStates addObject:handlerState];
+            }
+        }
+    }];
+    
+    sendMessageLock = NO;
+    [self flushPendingMessages];
+
+}
+
+- (void)flushPendingMessages {
+    if (pendingMessages.count) {
+        NSInvocation* invocation = pendingMessages[0];
+        [pendingMessages removeObjectAtIndex:0];
+        [self sendInvocation:invocation];
+    }
 }
 
 

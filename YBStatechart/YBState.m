@@ -190,42 +190,23 @@
     }];
 }
 
-- (void)handleInvocationAndDispatchToActiveSubstates:(NSInvocation *)anInvocation {
-    if ([_enteredSubstates count] == 0) {
-        return;
-    } else {
-        [_enteredSubstates enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(YBState *substate, BOOL *stop) {
-            [substate handleInvocation:anInvocation];
-        }];
-    }
-}
-
-- (void)handleInvocation:(NSInvocation*)anInvocation {
+- (BOOL)tryToHandleInvocation:(NSInvocation*)anInvocation {
     if ([self respondsToSelector:anInvocation.selector]) {
-        NSLog(@"Invocation: %@", NSStringFromSelector(anInvocation.selector));
+        NSLog(@"Handling invocation: %@", NSStringFromSelector(anInvocation.selector));
         [anInvocation invokeWithTarget:self];
+        return YES;
+    } else {
+        return NO;
     }
 }
 
 - (BOOL)canPerformAction:(SEL)action {
-    if (!self.isEnteredState) {
-        return NO;
-    } else if ([self respondsToSelector:action]) {
-        return YES;
-    } else {
-        if ([_substates count] == 0) {
-            return NO;
-        } else if ([_substates count] == 1) {
-            return [[_substates anyObject] canPerformAction:action];
-        } else {
-            __block BOOL substateCanPerformAction = NO;
-            [_enteredSubstates enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(YBState* substate, BOOL *stop) {
-                substateCanPerformAction = YES;
-                *stop = YES;
-            }];
-            return substateCanPerformAction;
-        }
-    }
+    __block BOOL substateCanPerformAction = NO;
+    [_enteredSubstates enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(YBState* substate, BOOL *stop) {
+        substateCanPerformAction = YES;
+        *stop = YES;
+    }];
+    return substateCanPerformAction;
 }
 
 - (void)removeCurrentState:(YBState*)state {
@@ -250,8 +231,8 @@
 
 
 - (NSString*)description {
-    return [NSString stringWithFormat:@"<%@ %p: `%@` (%@, %@), %i substates, statechart=%p, superstate=%p, path=%@>", [self class], self, _name,
-            self.isEnteredState ? @"entered" : @"not entered", self.isCurrentState ? @"current" : @"not current", [_substates count], _statechart, _superstate, [self path]];
+    return [NSString stringWithFormat:@"<%@ %p: `%@` (%@, %@), path=%@>", [self class], self, _name,
+            self.isEnteredState ? @"entered" : @"not entered", self.isCurrentState ? @"current" : @"not current", [self path]];
 }
 
 @end

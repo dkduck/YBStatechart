@@ -21,10 +21,11 @@
 }
 
 - (void)execute {
-    NSLog(@"Executing state action of type %d on state %@ (current state: %d)", _type, _state, _currentState);
     if (_type == YBStateActionExitState) {
+        NSLog(@"Exiting state %@", _state);
         [_state.statechart exitState:_state];
     } else {
+        NSLog(@"Entering state %@ (current state: %d)", _state, _currentState);
         [_state.statechart enterState:_state isCurrentState:_currentState];
     }
 }
