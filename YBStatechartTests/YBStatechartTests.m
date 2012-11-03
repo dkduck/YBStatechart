@@ -8,6 +8,8 @@
 
 #import "YBStatechartTests.h"
 #import "YBStatechart.h"
+#import "YBState.h"
+#import "YBStateAction.h"
 
 @implementation YBStatechartTests
 

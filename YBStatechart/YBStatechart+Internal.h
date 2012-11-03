@@ -8,6 +8,11 @@
 
 #import "YBStatechart.h"
 
-@interface YBStatechart (Internal)
+@interface YBStatechart ()
+
+- (void)registerState:(YBState *)state;
+- (void)gotoState:(YBState*)state fromState:(YBState*)fromState useHistory:(BOOL)useHistory recursive:(BOOL)recursive;
+- (void)exitState:(YBState*)state;
+- (void)enterState:(YBState*)state isCurrentState:(BOOL)isCurrentState;
 
 @end

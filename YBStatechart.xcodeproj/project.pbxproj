@@ -15,6 +15,11 @@
 		102591BE1521143200B11680 /* libYBStatechart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 102591A61521143200B11680 /* libYBStatechart.a */; };
 		102591C71521143200B11680 /* YBStatechartTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 102591C61521143200B11680 /* YBStatechartTests.m */; };
 		102591D41522A3FA00B11680 /* YBStatechart.h in Headers */ = {isa = PBXBuildFile; fileRef = 102591AE1521143200B11680 /* YBStatechart.h */; settings = {ATTRIBUTES = (); }; };
+		1747596316446C880020420E /* YBStatechart+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1747596116446C880020420E /* YBStatechart+Internal.h */; };
+		1747597316454FC30020420E /* YBStateAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 1747597116454FC30020420E /* YBStateAction.h */; };
+		1747597416454FC30020420E /* YBStateAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1747597216454FC30020420E /* YBStateAction.m */; };
+		1769C56F1644028F001E4953 /* YBState.h in Headers */ = {isa = PBXBuildFile; fileRef = 1769C56D1644028F001E4953 /* YBState.h */; };
+		1769C5701644028F001E4953 /* YBState.m in Sources */ = {isa = PBXBuildFile; fileRef = 1769C56E1644028F001E4953 /* YBState.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +44,12 @@
 		102591C11521143200B11680 /* YBStatechartTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "YBStatechartTests-Info.plist"; sourceTree = "<group>"; };
 		102591C51521143200B11680 /* YBStatechartTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBStatechartTests.h; sourceTree = "<group>"; };
 		102591C61521143200B11680 /* YBStatechartTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBStatechartTests.m; sourceTree = "<group>"; };
+		1747596116446C880020420E /* YBStatechart+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "YBStatechart+Internal.h"; path = "../../../../../../../florian/Documents/Dev/TrainingHub/Submodules/YBStatechart/YBStatechart/YBStatechart+Internal.h"; sourceTree = "<group>"; };
+		1747597116454FC30020420E /* YBStateAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = YBStateAction.h; path = ../../../../../../../florian/Documents/Dev/TrainingHub/Submodules/YBStatechart/YBStatechart/YBStateAction.h; sourceTree = "<group>"; };
+		1747597216454FC30020420E /* YBStateAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YBStateAction.m; path = ../../../../../../../florian/Documents/Dev/TrainingHub/Submodules/YBStatechart/YBStatechart/YBStateAction.m; sourceTree = "<group>"; };
+		1769C56D1644028F001E4953 /* YBState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = YBState.h; path = ../../../../../../../florian/Documents/Dev/TrainingHub/Submodules/YBStatechart/YBStatechart/YBState.h; sourceTree = "<group>"; };
+		1769C56E1644028F001E4953 /* YBState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YBState.m; path = ../../../../../../../florian/Documents/Dev/TrainingHub/Submodules/YBStatechart/YBStatechart/YBState.m; sourceTree = "<group>"; };
+		1769C57516440993001E4953 /* YBState+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "YBState+Internal.h"; path = "../../../../../../../florian/Documents/Dev/TrainingHub/Submodules/YBStatechart/YBStatechart/YBState+Internal.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +108,13 @@
 			isa = PBXGroup;
 			children = (
 				102591AE1521143200B11680 /* YBStatechart.h */,
+				1747596116446C880020420E /* YBStatechart+Internal.h */,
 				102591AF1521143200B11680 /* YBStatechart.m */,
+				1747597116454FC30020420E /* YBStateAction.h */,
+				1747597216454FC30020420E /* YBStateAction.m */,
+				1769C56D1644028F001E4953 /* YBState.h */,
+				1769C57516440993001E4953 /* YBState+Internal.h */,
+				1769C56E1644028F001E4953 /* YBState.m */,
 				102591AC1521143200B11680 /* Supporting Files */,
 			);
 			path = YBStatechart;
@@ -137,6 +154,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				102591D41522A3FA00B11680 /* YBStatechart.h in Headers */,
+				1769C56F1644028F001E4953 /* YBState.h in Headers */,
+				1747596316446C880020420E /* YBStatechart+Internal.h in Headers */,
+				1747597316454FC30020420E /* YBStateAction.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +259,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				102591B01521143200B11680 /* YBStatechart.m in Sources */,
+				1769C5701644028F001E4953 /* YBState.m in Sources */,
+				1747597416454FC30020420E /* YBStateAction.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,7 +302,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -293,11 +316,13 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_CFLAGS = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -306,9 +331,16 @@
 		102591CB1521143200B11680 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/YBStatechart.dst;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "YBStatechart/YBStatechart-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
@@ -323,6 +355,8 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "YBStatechart/YBStatechart-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
