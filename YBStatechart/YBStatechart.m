@@ -66,7 +66,7 @@
 #endif
     {
         [_rootState initializeStateRecursively];
-        [self gotoState:_rootState fromState:nil useHistory:NO recursive:NO];
+        [self gotoState:_rootState fromState:nil useHistory:NO recursive:NO context:nil];
         _isActive = YES;
     }
 }
@@ -87,12 +87,18 @@
 
 #pragma mark Internal
 
-- (void)gotoState:(YBState*)state fromState:(YBState*)fromState useHistory:(BOOL)useHistory recursive:(BOOL)recursive {
+- (void)gotoState:(YBState*)state fromState:(YBState*)fromState useHistory:(BOOL)useHistory recursive:(BOOL)recursive context:(id)context {
     NSAssert(fromState || !_rootState.currentSubstates.count, @"Attempting state transition without source state.");
     NSAssert(state, @"Attempting state transition without destination state.");
 
     if (stateTransitionLock) {
-        [pendingStateTransitions addObject:@{@"fromState" : fromState, @"targetState" : state, @"useHistory": @(useHistory), @"recursive" : @(recursive)}];
+        [pendingStateTransitions addObject:@{
+         @"fromState" : fromState,
+         @"targetState" : state,
+         @"useHistory": @(useHistory),
+         @"recursive" : @(recursive),
+         @"context" : context
+         }];
         return;
     }
     
@@ -122,7 +128,7 @@
         [self buildExitActionsFromState:pivotState toState:pivotState.superstate];
         [self buildEnterActionsForChain:@[pivotState] useHistoryRecursively:recursive];
     }
-    [self executeGotoStateActions];
+    [self executeGotoStateActionsWithContext:context];
     stateTransitionLock = NO;
     [self flushPendingStateTransitions];
     [self flushPendingMessages];
@@ -135,7 +141,8 @@
         [self gotoState:stateTransition[@"targetState"]
               fromState:stateTransition[@"fromState"]
              useHistory:(BOOL)stateTransition[@"useHistory"]
-              recursive:(BOOL)stateTransition[@"recursive"]];
+              recursive:(BOOL)stateTransition[@"recursive"]
+                context:stateTransition[@"context"]];
     }
 }
 
@@ -179,7 +186,7 @@
     [self buildExitActionsFromState:state.superstate toState:stopState];
 }
 
-- (void)buildEnterActionsForChain:(NSArray*)enterChain useHistoryRecursively:(BOOL)useHistory {
+- (void)buildEnterActionsForChain:(NSArray*)enterChain useHistoryRecursively:(BOOL)useHistoryRecursively {
     YBState* state = enterChain.lastObject;
     enterChain = [enterChain subarrayWithRange:NSMakeRange(0, enterChain.count - 1)];
     if (!state) {
@@ -191,13 +198,13 @@
         [gotoStateActions addObject:action];
         
         if (state.substatesAreOrthogonal) {
-            [self buildEnterActionsForOrthogonalStates:state.substates except:nil useHistoryRecursively:useHistory];
+            [self buildEnterActionsForOrthogonalStates:state.substates except:nil useHistoryRecursively:useHistoryRecursively];
         } else if (state.hasSubstates) {
-            if (useHistory && state.historySubstate) {
-                [self buildEnterActionsForChain:@[state.historySubstate] useHistoryRecursively:useHistory];
+            if (useHistoryRecursively && state.historySubstate) {
+                [self buildEnterActionsForChain:@[state.historySubstate] useHistoryRecursively:useHistoryRecursively];
             } else {
                 NSAssert1(state.initialSubstate, @"Initial substate not defined on state %@", state);
-                [self buildEnterActionsForChain:@[state.initialSubstate] useHistoryRecursively:useHistory];
+                [self buildEnterActionsForChain:@[state.initialSubstate] useHistoryRecursively:useHistoryRecursively];
             }
         } else {
             action.currentState = YES;
@@ -205,29 +212,29 @@
         
     } else {
         [gotoStateActions addObject:[YBStateAction stateActionWithType:YBStateActionEnterState forState:state current:NO]];
-        [self buildEnterActionsForChain:enterChain useHistoryRecursively:useHistory];
+        [self buildEnterActionsForChain:enterChain useHistoryRecursively:useHistoryRecursively];
         
         if (state.substatesAreOrthogonal) {
             YBState* excludedState = enterChain.lastObject;
-            [self buildEnterActionsForOrthogonalStates:state.substates except:excludedState useHistoryRecursively:useHistory];
+            [self buildEnterActionsForOrthogonalStates:state.substates except:excludedState useHistoryRecursively:useHistoryRecursively];
         }
     }
 }
 
-- (void)buildEnterActionsForOrthogonalStates:(NSSet*)states except:(YBState*)excludedState useHistoryRecursively:(BOOL)useHistory {
+- (void)buildEnterActionsForOrthogonalStates:(NSSet*)states except:(YBState*)excludedState useHistoryRecursively:(BOOL)useHistoryRecursively {
     [states enumerateObjectsUsingBlock:^(id state, BOOL *stop) {
         if (state != excludedState) {
-            [self buildEnterActionsForChain:@[state] useHistoryRecursively:useHistory];
+            [self buildEnterActionsForChain:@[state] useHistoryRecursively:useHistoryRecursively];
         }
     }];
 }
 
-- (void)executeGotoStateActions {
-    [gotoStateActions makeObjectsPerformSelector:@selector(execute)];
+- (void)executeGotoStateActionsWithContext:(id)context {
+    [gotoStateActions makeObjectsPerformSelector:@selector(executeWithContext:) withObject:context];
     gotoStateActions = nil;
 }
 
-- (void)exitState:(YBState*)state {
+- (void)exitState:(YBState*)state withContext:(id)context {
     if ([state.currentSubstates containsObject:state]) {
         YBState* superstate = state;
         while (superstate) {
@@ -242,11 +249,11 @@
         superstate = superstate.superstate;
     }
 
-    [state exitState];
+    [state exitState:context];
     state.skipStateInBuildingExitActions = NO;
 }
 
-- (void)enterState:(YBState*)state isCurrentState:(BOOL)isCurrentState {
+- (void)enterState:(YBState*)state withContext:(id)context isCurrentState:(BOOL)isCurrentState {
     YBState* superstate = state.superstate;
     if (superstate && !superstate.substatesAreOrthogonal) {
         superstate.historySubstate = state;
@@ -266,7 +273,7 @@
         superstate = superstate.superstate;
     }
 
-    [state enterState];
+    [state enterState:context];
 }
 
 
@@ -327,7 +334,8 @@
     sendMessageLock = YES;
     
     NSMutableSet* messageHandledByStates = [NSMutableSet set];
-    [_rootState.currentSubstates enumerateObjectsUsingBlock:^(YBState* state, BOOL *stop) {
+    NSSet* currentSubStates = [_rootState.currentSubstates copy];
+    [currentSubStates enumerateObjectsUsingBlock:^(YBState* state, BOOL *stop) {
         YBState* handlerState = state;
         BOOL messageHandled = NO;
         while (!messageHandled && handlerState && ![messageHandledByStates containsObject:handlerState]) {

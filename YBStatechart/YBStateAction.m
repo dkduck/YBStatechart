@@ -20,13 +20,13 @@
     return stateAction;
 }
 
-- (void)execute {
+- (void)executeWithContext:(id)context {
     if (_type == YBStateActionExitState) {
         NSLog(@"Exiting state %@", _state);
-        [_state.statechart exitState:_state];
+        [_state.statechart exitState:_state withContext:context];
     } else {
         NSLog(@"Entering state %@ (current state: %d)", _state, _currentState);
-        [_state.statechart enterState:_state isCurrentState:_currentState];
+        [_state.statechart enterState:_state withContext:context isCurrentState:_currentState];
     }
 }
 

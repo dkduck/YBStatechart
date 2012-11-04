@@ -58,6 +58,13 @@
 - (void)gotoState:(id)state;
 
 /**
+ Initiates a state transition from the current state to the specified target state.
+ @param state - The name of the target state or the target state object itself
+ @param context - A context object which will be handed to the target state's enterState method
+ */
+- (void)gotoState:(id)state context:(id)context;
+
+/**
  Initiates a state transition from the current state to the specified target state using the target state's state history
  @param state - The name of the target state or the target state object itself
  @param recursive - Enters history state recursively if YES, stops after the first history state if NO
@@ -65,16 +72,24 @@
 - (void)gotoHistoryState:(id)state recursive:(BOOL)recursive;
 
 /**
+ Initiates a state transition from the current state to the specified target state using the target state's state history
+ @param state - The name of the target state or the target state object itself
+ @param recursive - Enters history state recursively if YES, stops after the first history state if NO
+ @param context - A context object which will be handed to the target state's enterState method
+ */
+- (void)gotoHistoryState:(id)state recursive:(BOOL)recursive context:(id)context;
+
+/**
  This method gets called every time this states becomes active. 
  Override this to perform custom state setup.
  */
-- (void)enterState;
+- (void)enterState:(id)context;
 
 /**
  This method gets called every time this state becomes inactive.
  Override this to perform custom state teardown.
  */
-- (void)exitState;
+- (void)exitState:(id)context;
 
 /**
  The name of the receiver as set in -initWithName: or +stateWithName:

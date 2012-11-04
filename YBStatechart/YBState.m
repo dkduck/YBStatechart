@@ -123,14 +123,22 @@
 }
 
 - (void)gotoState:(id)state {
-    [self gotoState:state useHistory:NO recursive:NO];
+    [self gotoState:state useHistory:NO recursive:NO context:nil];
+}
+
+- (void)gotoState:(id)state context:(id)context {
+    [self gotoState:state useHistory:NO recursive:NO context:context];
 }
 
 - (void)gotoHistoryState:(id)state recursive:(BOOL)recursive {
-    [self gotoState:state useHistory:YES recursive:recursive];
+    [self gotoState:state useHistory:YES recursive:recursive context:nil];
 }
 
-- (void)gotoState:(id)state useHistory:(BOOL)useHistory recursive:(BOOL)recursive {
+- (void)gotoHistoryState:(id)state recursive:(BOOL)recursive context:(id)context {
+    [self gotoState:state useHistory:YES recursive:recursive context:context];
+}
+
+- (void)gotoState:(id)state useHistory:(BOOL)useHistory recursive:(BOOL)recursive context:(id)context {
     if ([state isKindOfClass:[NSString class]]) {
         state = [self.statechart findStateWithName:state];
     }
@@ -143,13 +151,13 @@
     }
     NSAssert1(fromState, @"Attempted to transition to state %@ but could not determine source state", state);
     
-    [self.statechart gotoState:state fromState:fromState useHistory:useHistory recursive:recursive];
+    [self.statechart gotoState:state fromState:fromState useHistory:useHistory recursive:recursive context:context];
 }
 
-- (void)enterState {
+- (void)enterState:(id)context {
 }
 
-- (void)exitState {
+- (void)exitState:(id)context {
 }
 
 - (BOOL)isCurrentState {

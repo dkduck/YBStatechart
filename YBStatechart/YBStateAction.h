@@ -18,7 +18,7 @@ typedef enum {
 @interface YBStateAction : NSObject
 
 @property (nonatomic) YBStateActionType type;
-@property (strong,nonatomic) YBState* state;
+@property (weak,nonatomic) YBState* state;
 @property (nonatomic) BOOL currentState;
 
 + (YBStateAction*)stateActionWithType:(YBStateActionType)type forState:(YBState*)state current:(BOOL)current;

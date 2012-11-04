@@ -11,8 +11,8 @@
 @interface YBStatechart ()
 
 - (void)registerState:(YBState *)state;
-- (void)gotoState:(YBState*)state fromState:(YBState*)fromState useHistory:(BOOL)useHistory recursive:(BOOL)recursive;
-- (void)exitState:(YBState*)state;
-- (void)enterState:(YBState*)state isCurrentState:(BOOL)isCurrentState;
+- (void)gotoState:(YBState*)state fromState:(YBState*)fromState useHistory:(BOOL)useHistory recursive:(BOOL)recursive context:(id)context;
+- (void)exitState:(YBState*)state withContext:(id)context;
+- (void)enterState:(YBState*)state withContext:(id)context isCurrentState:(BOOL)isCurrentState;
 
 @end
