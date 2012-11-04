@@ -22,6 +22,6 @@ typedef enum {
 @property (nonatomic) BOOL currentState;
 
 + (YBStateAction*)stateActionWithType:(YBStateActionType)type forState:(YBState*)state current:(BOOL)current;
-- (void)execute;
+- (void)executeWithContext:(id)context;
 
 @end
