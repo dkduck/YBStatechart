@@ -56,6 +56,19 @@
  */
 @property (nonatomic, assign, readonly) BOOL isActive;
 
+/**
+ This method can be called in an enterState/exitState method to suspend the state transition, e.g. to wait until an animation is finished.
+ The state transition can be resumed by calling -resumeStateTransition.
+ @see -[YBStatechart resumeStateTransition]
+ */
+- (void)suspendStateTransition;
+
+/**
+ This method resumes a previously suspended state transition process.
+ @see -[YBStatechart suspendStateTransition]
+ */
+- (void)resumeStateTransition;
+
 @end
 
 

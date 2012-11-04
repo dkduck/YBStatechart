@@ -21,6 +21,8 @@
     NSMutableArray* pendingMessages;
     BOOL stateTransitionLock;
     BOOL sendMessageLock;
+    BOOL stateTransitionSuspended;
+    id stateTransitionSuspensionContext;
 }
 @end
 
@@ -36,6 +38,7 @@
         pendingMessages = [NSMutableArray array];
         stateTransitionLock = NO;
         sendMessageLock = NO;
+        stateTransitionSuspended = NO;
     }
     return self;
 }
@@ -230,8 +233,33 @@
 }
 
 - (void)executeGotoStateActionsWithContext:(id)context {
-    [gotoStateActions makeObjectsPerformSelector:@selector(executeWithContext:) withObject:context];
-    gotoStateActions = nil;
+    NSInteger i;
+    for (i = 0; i < gotoStateActions.count; i++) {
+        YBStateAction* action = gotoStateActions[i];
+        [action executeWithContext:context];
+        if (stateTransitionSuspended) {
+            break;
+        }
+    }
+    if (stateTransitionSuspended) {
+        [gotoStateActions removeObjectsInRange:NSMakeRange(0, i + 1)];
+        stateTransitionSuspensionContext = context;
+    } else {
+        gotoStateActions = nil;
+    }
+}
+
+- (void)suspendStateTransition {
+    NSAssert(stateTransitionLock, @"Attempt to suspend state transitions while not currently being in a transition");
+    stateTransitionSuspended = YES;
+}
+
+- (void)resumeStateTransition {
+    NSAssert(stateTransitionSuspended, @"Attempt to resume state transition without being in a suspended state");
+    stateTransitionSuspended = NO;
+    id context = stateTransitionSuspensionContext;
+    stateTransitionSuspensionContext = nil;
+    [self executeGotoStateActionsWithContext:context];
 }
 
 - (void)exitState:(YBState*)state withContext:(id)context {
