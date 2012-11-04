@@ -22,10 +22,14 @@
 
 - (void)executeWithContext:(id)context {
     if (_type == YBStateActionExitState) {
+#if DEBUG
         NSLog(@"Exiting state %@", _state);
+#endif
         [_state.statechart exitState:_state withContext:context];
     } else {
+#if DEBUG
         NSLog(@"Entering state %@ (current state: %d)", _state, _currentState);
+#endif
         [_state.statechart enterState:_state withContext:context isCurrentState:_currentState];
     }
 }
