@@ -368,14 +368,14 @@
         BOOL messageHandled = NO;
         while (!messageHandled && handlerState && ![messageHandledByStates containsObject:handlerState]) {
             messageHandled = [handlerState tryToHandleInvocation:invocation];
-            if (!messageHandled) {
-                handlerState = handlerState.superstate;
-            } else {
+            if (messageHandled) {
                 [messageHandledByStates addObject:handlerState];
+            } else {
+                handlerState = handlerState.superstate;
             }
         }
     }];
-    
+    NSAssert(messageHandledByStates.count > 0, @"At least one state should handle the message.");
     sendMessageLock = NO;
     [self flushPendingMessages];
 

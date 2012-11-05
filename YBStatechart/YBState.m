@@ -189,7 +189,9 @@
 
 - (BOOL)tryToHandleInvocation:(NSInvocation*)anInvocation {
     if ([self respondsToSelector:anInvocation.selector]) {
+#if DEBUG_STATE
         NSLog(@"Handling invocation: %@", NSStringFromSelector(anInvocation.selector));
+#endif
         [anInvocation invokeWithTarget:self];
         return YES;
     } else {

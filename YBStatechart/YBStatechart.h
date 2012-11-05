@@ -72,7 +72,7 @@
 @end
 
 
-#if DEBUG
+#if DEBUG_STATE
 @interface YBStatechart (Debugging)
 /**
  Validates if the statechart is fully-defined. Prints the parameters that need to be defined in order to make the statechart fully-defined (e.g. missing `initialSubstate` values).
