@@ -1,48 +1,13 @@
 YBStatechart
 ============
 
-YBStatechart is a statechart framework. Statecharts are a formalized type of finite state machine, which resulted from [David Harel's research] [1] on software architecture design for aircraft systems in 1986. His [white paper article] [1] is well worth the (somewhat lengthy) read.
+YBStatechart is a statechart framework written in Objective-C.
 
-The statechart design pattern is also used in the SproutCore web front-end framework. They wrote [a blog article] [2] about statecharts compared to the model-view-controller pattern.
+This framework started out as a fork of [ronaldmannak's YBStatechart] [1] framework. Then it was more or less completely rewritten to more closely resemble [SproutCore's statechart framework] [2].
 
-Contrived example
------------------
+Please see the YBStatechart.h and YBState.h header files for more documentation on the API.
 
-A very simple example of a chart with only 2 substates:
+**Attention:** This is a very early version and the included tests are not updated to the recent changes.
 
-	YBState *rootState = [YBState stateWithName:@"rootState"];
-	YBState *loggedOut = [YBState stateWithName:@"loggedOut"];
-    YBState *loggedIn = [YBState stateWithName:@"loggedIn"];
-    
-	[loggedIn onEnterState:^(YBState *_self) {
-        // executed when loggedIn state is entered / activated
-    }];
-    
-    [loggedIn onExitState:^(YBState *_self) {
-        // executed when loggedIn state is exited / deactivated
-    }];
-    
-    [loggedIn on:@"buttonPress" doBlock:^(YBState *_self) {
-        // executed only when loggedIn is active
-		// AND 
-		// [statechart buttonPress] or [statechart dispatchEvent:@"buttonPress"] got called
-    }];
-	
-    YBStatechart *statechart = [[YBStatechart alloc] init];
-    statechart.rootState = rootState;
-    [statechart activate];
-
-A state can be activated by calling one of the `-activateState...:` methods on the statechart, e.g.:
-
-	[statechart activateState:loggedIn];
-
-Now the `statechart` object is able to respond to arbitrary Objective-C messages, which will be dispatched as "events" to all the active substates and their active substates, ... For example:
-
-	[statechart buttonPress];
-	
-This will call the block handlers associated with the named event `buttonPress`, but only on states that are active at this moment.
-
-For more useful examples, please read [David Harel's white paper] [1].
-
-[1]: http://www.wisdom.weizmann.ac.il/~harel/SCANNED.PAPERS/Statecharts.pdf
-[2]: http://blog.sproutcore.com/statecharts-in-sproutcore/
+[2]: https://github.com/ronaldmannak/YBStatechart
+[3]: https://github.com/FrozenCanuck/Ki
