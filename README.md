@@ -9,5 +9,5 @@ Please see the YBStatechart.h and YBState.h header files for more documentation 
 
 **Attention:** This is a very early version and the included tests are not updated to the recent changes.
 
-[2]: https://github.com/ronaldmannak/YBStatechart
-[3]: https://github.com/FrozenCanuck/Ki
+[1]: https://github.com/ronaldmannak/YBStatechart
+[2]: https://github.com/FrozenCanuck/Ki
